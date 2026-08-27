@@ -81,24 +81,24 @@ if result:
         "Selecciona el lenguaje de Entrada",
         ("Inglés", "Español", "Italiano", "Frances", "Aleman", "Checo", "Mandarín", "Japonés"),
     )
-    if in_lang == "Inglés":
-        input_language = "en"
-    elif in_lang == "Español":
-        input_language = "es"
-    elif in_lang == "Italiano":
-        input_language = "it"
-    elif in_lang == "Frances":
-        input_language = "fr"
-    elif in_lang == "Aleman":
-        input_language = "de"
-    elif in_lang == "Checo":
-        input_language = "cs"
-    elif in_lang == "Coreano":
-        input_language = "ko"
-    elif in_lang == "Mandarín":
-        input_language = "zh-cn"
-    elif in_lang == "Japonés":
-        input_language = "ja"
+    if out_lang == "Inglés":
+        output_language = "en"
+    elif out_lang == "Español":
+        output_language = "es"
+    elif out_lang == "Italiano":
+        output_language = "it"
+    elif out_lang == "Frances":
+        output_language = "fr"
+    elif out_lang == "Aleman":
+        output_language = "de"
+    elif out_lang == "Checo":
+        output_language = "cs"
+    elif out_lang == "Coreano":
+        output_language = "ko"
+    elif out_lang == "Mandarín":
+        output_language = "zh-cn"
+    elif out_lang == "Japonés":
+        output_language = "ja"
     
     out_lang = st.selectbox(
         "Selecciona el lenguaje de salida",
