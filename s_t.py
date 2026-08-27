@@ -141,7 +141,6 @@ if result:
         tld = "com"
     elif english_accent == "Español":
         tld = "com.mx"
-    
     elif english_accent == "Reino Unido":
         tld = "co.uk"
     elif english_accent == "Estados Unidos":
