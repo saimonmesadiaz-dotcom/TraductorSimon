@@ -1,4 +1,3 @@
-```python
 import os
 import streamlit as st
 from bokeh.models import Button
@@ -385,17 +384,7 @@ if result:
                         os.remove(f)
 
 
-        remove_files(7)
-```
-
-
-
-        
-    
-
-
-
-        
+        remove_files(7)      
     
 
 
