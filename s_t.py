@@ -192,15 +192,4 @@ if result:
                     print("Deleted ", f)
 
     remove_files(7)
-           
 
-
-        
-    
-
-
-
-                    print("Deleted ", f)
-
-
-    remove_files(7)
