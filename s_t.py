@@ -13,7 +13,7 @@ from googletrans import Translator
 
 
 # ---------------------------------------------------------
-# CONFIGURACIÓN
+# CONFIGURACIÓN VISUAL
 # ---------------------------------------------------------
 
 st.set_page_config(
@@ -21,29 +21,17 @@ st.set_page_config(
     layout="centered"
 )
 
-
-# ---------------------------------------------------------
-# IMAGEN DE FONDO
-# ---------------------------------------------------------
-
+# Imagen de fondo
 with open("IDIOMAS.jpg", "rb") as f:
     background = f.read()
 
 background_base64 = base64.b64encode(background).decode()
 
-
-# ---------------------------------------------------------
-# DISEÑO
-# ---------------------------------------------------------
-
 st.markdown(
     f"""
     <style>
 
-    /* =========================
-       FONDO
-       ========================= */
-
+    /* FONDO DE LA PÁGINA */
     .stApp {{
         background-image:
             linear-gradient(
@@ -57,47 +45,31 @@ st.markdown(
         background-attachment: fixed;
     }}
 
-
-    /* =========================
-       CONTENIDO
-       ========================= */
-
+    /* CONTENIDO PRINCIPAL CENTRADO */
     .main .block-container {{
         text-align: center;
     }}
 
-
-    /* =========================
-       TÍTULOS
-       ========================= */
-
+    /* TÍTULOS */
     h1 {{
         text-align: center;
         font-size: 42px;
-        color: white !important;
+        color: white;
         font-weight: 700;
     }}
 
     h2, h3 {{
         text-align: center;
-        color: white !important;
+        color: white;
     }}
 
-
-    /* =========================
-       TEXTOS
-       ========================= */
-
+    /* TEXTOS */
     p {{
         text-align: center;
         color: white;
     }}
 
-
-    /* =========================
-       IMAGEN
-       ========================= */
-
+    /* IMAGEN PRINCIPAL CENTRADA */
     [data-testid="stImage"] {{
         display: flex;
         justify-content: center;
@@ -109,160 +81,64 @@ st.markdown(
         border-radius: 12px;
     }}
 
-
-    /* =========================
-       SIDEBAR
-       ========================= */
-
+    /* SIDEBAR */
     [data-testid="stSidebar"] {{
         background-color: rgba(255,255,255,0.92);
         text-align: left;
     }}
 
     [data-testid="stSidebar"] h3 {{
-        color: #222222 !important;
+        color: #222222;
         text-align: left;
     }}
 
     [data-testid="stSidebar"] p {{
-        color: #333333 !important;
+        color: #333333;
         text-align: left;
     }}
 
-
-    /* =====================================================
-       SELECTORES
-       ===================================================== */
-
-    /* ETIQUETAS SOBRE LOS SELECTORES */
-    [data-testid="stSelectbox"] label {{
-        color: white !important;
-    }}
-
-    [data-testid="stSelectbox"] label p {{
-        color: white !important;
-    }}
-
-
-    /* CUADRO PRINCIPAL DEL SELECTOR */
-    [data-testid="stSelectbox"] [data-baseweb="select"] {{
-        background: white !important;
+    /* RECTÁNGULOS BLANCOS DE LOS DESPLEGABLES */
+    .stSelectbox [data-baseweb="select"] {{
         background-color: white !important;
-        border-radius: 10px !important;
+        border-radius: 10px;
+    }}
+
+    /* TEXTO DENTRO DEL RECTÁNGULO */
+    .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] {{
         color: black !important;
     }}
 
-
-    /* TODOS LOS ELEMENTOS INTERNOS DEL CUADRO */
-    [data-testid="stSelectbox"] [data-baseweb="select"] > div {{
-        background: white !important;
-        background-color: white !important;
+    .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] * {{
         color: black !important;
     }}
 
-
-    /* CONTENEDOR DEL TEXTO */
-    [data-testid="stSelectbox"] [data-baseweb="value-container"] {{
-        background: white !important;
-        background-color: white !important;
-        color: black !important;
-    }}
-
-
-    /* TEXTO SELECCIONADO */
-    [data-testid="stSelectbox"] [data-baseweb="value-container"] span {{
-        color: black !important;
-        background: transparent !important;
-    }}
-
-
-    /* TODOS LOS TEXTOS DENTRO DEL SELECTOR */
-    [data-testid="stSelectbox"] [data-baseweb="select"] span,
-    [data-testid="stSelectbox"] [data-baseweb="select"] p,
-    [data-testid="stSelectbox"] [data-baseweb="select"] div {{
-        color: black !important;
-    }}
-
-
-    /* FLECHA */
-    [data-testid="stSelectbox"] [data-baseweb="select"] svg {{
+    /* FLECHA DEL DESPLEGABLE */
+    .stSelectbox [data-baseweb="select"] svg {{
         fill: black !important;
-        color: black !important;
     }}
 
-
-    /* =====================================================
-       MENÚ DESPLEGABLE
-       ===================================================== */
-
-    /* CONTENEDOR DEL MENÚ */
-    [data-baseweb="popover"] {{
-        background: white !important;
+    /* OPCIONES QUE APARECEN AL ABRIR EL DESPLEGABLE */
+    div[role="listbox"] {{
         background-color: white !important;
     }}
 
-    [data-baseweb="popover"] > div {{
-        background: white !important;
+    div[role="option"] {{
+        color: black !important;
         background-color: white !important;
     }}
 
-
-    /* LISTA */
-    [role="listbox"] {{
-        background: white !important;
-        background-color: white !important;
+    div[role="option"] * {{
         color: black !important;
     }}
 
-
-    /* CADA OPCIÓN */
-    [role="option"] {{
-        background: white !important;
-        background-color: white !important;
-        color: black !important;
+    /* ETIQUETAS ENCIMA DE LOS DESPLEGABLES */
+    .stSelectbox label {{
+        color: white !important;
     }}
 
-
-    /* TEXTO DE LAS OPCIONES */
-    [role="option"] span {{
-        color: black !important;
+    .stSelectbox label p {{
+        color: white !important;
     }}
-
-    [role="option"] div {{
-        color: black !important;
-        background: transparent !important;
-    }}
-
-    [role="option"] p {{
-        color: black !important;
-    }}
-
-
-    /* HOVER */
-    [role="option"]:hover {{
-        background: #eeeeee !important;
-        background-color: #eeeeee !important;
-        color: black !important;
-    }}
-
-    [role="option"]:hover span,
-    [role="option"]:hover div,
-    [role="option"]:hover p {{
-        color: black !important;
-    }}
-
-
-    /* OPCIÓN SELECCIONADA */
-    [role="option"][aria-selected="true"] {{
-        background: #eeeeee !important;
-        background-color: #eeeeee !important;
-        color: black !important;
-    }}
-
-    [role="option"][aria-selected="true"] span {{
-        color: black !important;
-    }}
-
 
     </style>
     """,
@@ -279,11 +155,11 @@ st.subheader("Escucho lo que quieres traducir.")
 
 
 # ---------------------------------------------------------
-# IMAGEN
+# IMAGEN PRINCIPAL
 # ---------------------------------------------------------
 
 image = Image.open("Imagen Traduccion y reconocimiento idiomas.jpg")
-st.image(image, width=300)
+st.image(image, width=600)
 
 
 # ---------------------------------------------------------
@@ -333,16 +209,20 @@ stt_button.js_on_event(
                 if (e.results[i].isFinal) {
                     value += e.results[i][0].transcript;
                 }
+
             }
 
             if (value != "") {
+
                 document.dispatchEvent(
                     new CustomEvent(
                         "GET_TEXT",
                         {detail: value}
                     )
                 );
+
             }
+
         }
 
         recognition.onend = function() {
@@ -371,6 +251,7 @@ result = streamlit_bokeh_events(
 if result:
 
     if "GET_TEXT" in result:
+
         st.write(result.get("GET_TEXT"))
 
     try:
@@ -402,7 +283,6 @@ if result:
             "Japonés"
         ),
     )
-
 
     if in_lang == "Inglés":
         input_language = "en"
@@ -449,7 +329,6 @@ if result:
             "Japonés"
         ),
     )
-
 
     if out_lang == "Inglés":
         output_language = "en"
@@ -524,7 +403,7 @@ if result:
 
 
     # -----------------------------------------------------
-    # TEXTO A AUDIO
+    # TEXTO A VOZ
     # -----------------------------------------------------
 
     def text_to_speech(
@@ -572,7 +451,7 @@ if result:
 
 
     # -----------------------------------------------------
-    # CONVERTIR
+    # BOTÓN CONVERTIR
     # -----------------------------------------------------
 
     if st.button("convertir"):
@@ -599,9 +478,12 @@ if result:
             start_time=0
         )
 
+
         if display_output_text:
 
-            st.markdown("## Texto de salida:")
+            st.markdown(
+                "## Texto de salida:"
+            )
 
             st.write(
                 f" {output_text}"
@@ -614,7 +496,9 @@ if result:
 
     def remove_files(n):
 
-        mp3_files = glob.glob("temp/*mp3")
+        mp3_files = glob.glob(
+            "temp/*mp3"
+        )
 
         if len(mp3_files) != 0:
 
@@ -628,7 +512,10 @@ if result:
 
                     os.remove(f)
 
-                    print("Deleted ", f)
+                    print(
+                        "Deleted ",
+                        f
+                    )
 
 
     remove_files(7)
