@@ -1,14 +1,19 @@
 import os
+import time
+import glob
 import streamlit as st
+
 from bokeh.models import Button
 from bokeh.models import CustomJS
 from streamlit_bokeh_events import streamlit_bokeh_events
-import time
-import glob
 
 from gtts import gTTS
 from googletrans import Translator
 
+
+# =========================================================
+# CONFIGURACIÓN
+# =========================================================
 
 st.set_page_config(
     page_title="Traductor",
@@ -24,18 +29,22 @@ st.markdown("""
 <style>
 
 .stApp {
-    background:
-        linear-gradient(rgba(185, 195, 145, 0.82), rgba(185, 195, 145, 0.82)),
-        url("IDIOMAS.jpg");
+    background-image: url("fondo.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
 
+/* Contenedor principal */
+
 .block-container {
     max-width: 900px;
     padding-top: 2rem;
+    padding-bottom: 2rem;
 }
+
+
+/* Títulos */
 
 h1 {
     text-align: center;
@@ -52,6 +61,17 @@ p, label {
     color: #35372D !important;
 }
 
+
+/* Imagen principal */
+
+[data-testid="stImage"] {
+    display: flex;
+    justify-content: center;
+}
+
+
+/* Botones */
+
 .stButton > button {
     background-color: #667044;
     color: #F2E8D3;
@@ -64,13 +84,40 @@ p, label {
     background-color: #505A36;
 }
 
+
+/* Selectores */
+
 div[data-baseweb="select"] > div {
     background-color: #F1E6CF !important;
     border-radius: 10px;
 }
 
+
+/* Texto de los selectores */
+
+div[data-baseweb="select"] span {
+    color: #35372D !important;
+}
+
+
+/* Sidebar */
+
 section[data-testid="stSidebar"] {
-    background-color: #AAB57D;
+    background-color: rgba(230, 225, 205, 0.92);
+}
+
+
+/* Caja de texto */
+
+.stTextInput input {
+    color: #000000 !important;
+}
+
+
+/* Checkbox */
+
+.stCheckbox label {
+    color: #35372D !important;
 }
 
 </style>
@@ -92,19 +139,32 @@ except:
 # =========================================================
 
 st.title("TRADUCTOR.")
+
 st.subheader("Escucho lo que quieres traducir.")
 
 
 # =========================================================
-# SIDEBAR ORIGINAL
+# IMAGEN
+# =========================================================
+
+st.image(
+    "Imagen Traducción y Reconocimiento.png",
+    width=500
+)
+
+
+# =========================================================
+# SIDEBAR
 # =========================================================
 
 with st.sidebar:
+
     st.subheader("Traductor.")
+
     st.write(
         "Presiona el botón, cuando escuches la señal "
-        "habla lo que quieres traducir, luego selecciona"
-        " la configuración de lenguaje que necesites."
+        "habla lo que quieres traducir, luego selecciona "
+        "la configuración de lenguaje que necesites."
     )
 
 
@@ -132,26 +192,46 @@ stt_button.js_on_event(
         recognition.lang = 'es-ES';
 
         recognition.onresult = function (e) {
+
             var value = "";
 
-            for (var i = e.resultIndex; i < e.results.length; ++i) {
+            for (
+                var i = e.resultIndex;
+                i < e.results.length;
+                ++i
+            ) {
+
                 if (e.results[i].isFinal) {
+
                     value += e.results[i][0].transcript;
+
                 }
+
             }
 
             if (value != "") {
+
                 document.dispatchEvent(
-                    new CustomEvent("GET_TEXT", {detail: value})
+                    new CustomEvent(
+                        "GET_TEXT",
+                        {detail: value}
+                    )
                 );
+
             }
+
         }
 
         recognition.onend = function() {
-            console.log("Reconocimiento detenido");
+
+            console.log(
+                "Reconocimiento detenido"
+            );
+
         }
 
         recognition.start();
+
     """)
 )
 
@@ -174,13 +254,45 @@ if result:
 
     if "GET_TEXT" in result:
 
-        text = str(result.get("GET_TEXT"))
+        text = str(
+            result.get("GET_TEXT")
+        )
+
+
+        # =================================================
+        # TEXTO RECONOCIDO
+        # =================================================
 
         st.subheader("Texto reconocido")
+
         st.write(text)
+
 
         translator = Translator()
 
+
+        # =================================================
+        # IDIOMAS
+        # =================================================
+
+        idiomas = {
+
+            "Inglés": "en",
+            "Español": "es",
+            "Italiano": "it",
+            "Frances": "fr",
+            "Aleman": "de",
+            "Checo": "cs",
+            "Coreano": "ko",
+            "Mandarín": "zh-cn",
+            "Japonés": "ja"
+
+        }
+
+
+        # =================================================
+        # COLUMNAS
+        # =================================================
 
         col1, col2 = st.columns(2)
 
@@ -207,18 +319,6 @@ if result:
             )
 
 
-        idiomas = {
-            "Inglés": "en",
-            "Español": "es",
-            "Italiano": "it",
-            "Frances": "fr",
-            "Aleman": "de",
-            "Checo": "cs",
-            "Coreano": "ko",
-            "Mandarín": "zh-cn",
-            "Japonés": "ja"
-        }
-
         input_language = idiomas[in_lang]
 
 
@@ -243,6 +343,7 @@ if result:
                 )
             )
 
+
         output_language = idiomas[out_lang]
 
 
@@ -266,6 +367,7 @@ if result:
 
 
         acentos = {
+
             "Defecto": "com",
             "Español": "com.mx",
             "Reino Unido": "co.uk",
@@ -274,7 +376,9 @@ if result:
             "Australia": "com.au",
             "Irlanda": "ie",
             "Sudáfrica": "co.za"
+
         }
+
 
         tld = acentos[english_accent]
 
@@ -296,7 +400,9 @@ if result:
                 dest=output_language
             )
 
+
             trans_text = translation.text
+
 
             tts = gTTS(
                 trans_text,
@@ -305,21 +411,32 @@ if result:
                 slow=False
             )
 
+
             my_file_name = text[:20]
 
+
             my_file_name = "".join(
-                c for c in my_file_name
-                if c.isalnum() or c in (" ", "_", "-")
+                c
+                for c in my_file_name
+                if c.isalnum()
+                or c in (" ", "_", "-")
             )
 
+
             if not my_file_name:
+
                 my_file_name = "audio"
+
 
             tts.save(
                 f"temp/{my_file_name}.mp3"
             )
 
-            return my_file_name, trans_text
+
+            return (
+                my_file_name,
+                trans_text
+            )
 
 
         # =================================================
@@ -344,14 +461,18 @@ if result:
                 tld
             )
 
+
             audio_file = open(
                 f"temp/{result_file}.mp3",
                 "rb"
             )
 
+
             audio_bytes = audio_file.read()
 
+
             st.subheader("Tu audio")
+
 
             st.audio(
                 audio_bytes,
@@ -359,10 +480,16 @@ if result:
                 start_time=0
             )
 
+
             if display_output_text:
 
-                st.subheader("Texto de salida")
-                st.write(output_text)
+                st.subheader(
+                    "Texto de salida"
+                )
+
+                st.write(
+                    output_text
+                )
 
 
         # =================================================
@@ -371,20 +498,26 @@ if result:
 
         def remove_files(n):
 
-            mp3_files = glob.glob("temp/*mp3")
+            mp3_files = glob.glob(
+                "temp/*mp3"
+            )
+
 
             if len(mp3_files) != 0:
 
                 now = time.time()
+
                 n_days = n * 86400
+
 
                 for f in mp3_files:
 
                     if os.stat(f).st_mtime < now - n_days:
+
                         os.remove(f)
 
 
-        remove_files(7)      
+        remove_files(7)
     
 
 
