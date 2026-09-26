@@ -21,7 +21,7 @@ st.set_page_config(
 )
 
 # Imagen de fondo
-with open("IDIOMAS.JPG", "rb") as f:
+with open("IDIOMAS.jpg", "rb") as f:
     background = f.read()
 
 import base64
