@@ -18,12 +18,11 @@ from googletrans import Translator
 
 st.set_page_config(
     page_title="Traductor",
-    page_icon="🌎",
     layout="centered"
 )
 
 # Imagen de fondo
-with open("IDIOMAS.JPG", "rb") as f:
+with open("IDIOMAS.jpg", "rb") as f:
     background = f.read()
 
 background_base64 = base64.b64encode(background).decode()
