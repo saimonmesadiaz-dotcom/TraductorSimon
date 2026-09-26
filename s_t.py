@@ -13,7 +13,7 @@ from googletrans import Translator
 
 
 # ---------------------------------------------------------
-# CONFIGURACIÓN VISUAL
+# CONFIGURACIÓN
 # ---------------------------------------------------------
 
 st.set_page_config(
@@ -21,11 +21,20 @@ st.set_page_config(
     layout="centered"
 )
 
-# Imagen de fondo
+
+# ---------------------------------------------------------
+# IMAGEN DE FONDO
+# ---------------------------------------------------------
+
 with open("IDIOMAS.jpg", "rb") as f:
     background = f.read()
 
 background_base64 = base64.b64encode(background).decode()
+
+
+# ---------------------------------------------------------
+# DISEÑO
+# ---------------------------------------------------------
 
 st.markdown(
     f"""
@@ -97,47 +106,54 @@ st.markdown(
         text-align: left;
     }}
 
-    /* RECTÁNGULOS BLANCOS DE LOS DESPLEGABLES */
+
+    /* =====================================================
+       SELECTORES
+       ===================================================== */
+
+    /* ETIQUETAS ENCIMA DE LOS CUADROS */
+    .stSelectbox label,
+    .stSelectbox label p {{
+        color: white !important;
+    }}
+
+    /* RECTÁNGULO DEL SELECTOR */
     .stSelectbox [data-baseweb="select"] {{
         background-color: white !important;
         border-radius: 10px;
     }}
 
     /* TEXTO DENTRO DEL RECTÁNGULO */
-    .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] {{
+    .stSelectbox [data-baseweb="select"] * {{
         color: black !important;
     }}
 
-    .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] * {{
-        color: black !important;
-    }}
-
-    /* FLECHA DEL DESPLEGABLE */
-    .stSelectbox [data-baseweb="select"] svg {{
-        fill: black !important;
-    }}
-
-    /* OPCIONES QUE APARECEN AL ABRIR EL DESPLEGABLE */
+    /* MENÚ QUE APARECE AL ABRIR */
     div[role="listbox"] {{
         background-color: white !important;
     }}
 
+    /* OPCIONES DEL MENÚ */
     div[role="option"] {{
-        color: black !important;
         background-color: white !important;
-    }}
-
-    div[role="option"] * {{
         color: black !important;
     }}
 
-    /* ETIQUETAS ENCIMA DE LOS DESPLEGABLES */
-    .stSelectbox label {{
-        color: white !important;
+    /* TEXTO DE LAS OPCIONES */
+    div[role="option"] *,
+    div[role="option"] span,
+    div[role="option"] p {{
+        color: black !important;
     }}
 
-    .stSelectbox label p {{
-        color: white !important;
+    /* OPCIÓN AL PASAR EL MOUSE */
+    div[role="option"]:hover {{
+        background-color: #eeeeee !important;
+    }}
+
+    /* FLECHA DEL SELECTOR */
+    .stSelectbox svg {{
+        fill: black !important;
     }}
 
     </style>
@@ -155,7 +171,7 @@ st.subheader("Escucho lo que quieres traducir.")
 
 
 # ---------------------------------------------------------
-# IMAGEN PRINCIPAL
+# IMAGEN
 # ---------------------------------------------------------
 
 image = Image.open("Imagen Traduccion y reconocimiento idiomas.jpg")
@@ -176,7 +192,7 @@ with st.sidebar:
 
 
 # ---------------------------------------------------------
-# RECONOCIMIENTO DE VOZ
+# BOTÓN DE VOZ
 # ---------------------------------------------------------
 
 st.write("Toca el Botón y habla lo que quires traducir")
@@ -186,6 +202,7 @@ stt_button = Button(
     width=300,
     height=50
 )
+
 
 stt_button.js_on_event(
     "button_click",
@@ -222,7 +239,6 @@ stt_button.js_on_event(
                 );
 
             }
-
         }
 
         recognition.onend = function() {
@@ -251,7 +267,6 @@ result = streamlit_bokeh_events(
 if result:
 
     if "GET_TEXT" in result:
-
         st.write(result.get("GET_TEXT"))
 
     try:
@@ -283,6 +298,7 @@ if result:
             "Japonés"
         ),
     )
+
 
     if in_lang == "Inglés":
         input_language = "en"
@@ -329,6 +345,7 @@ if result:
             "Japonés"
         ),
     )
+
 
     if out_lang == "Inglés":
         output_language = "en"
@@ -403,7 +420,7 @@ if result:
 
 
     # -----------------------------------------------------
-    # TEXTO A VOZ
+    # TEXTO A AUDIO
     # -----------------------------------------------------
 
     def text_to_speech(
@@ -451,7 +468,7 @@ if result:
 
 
     # -----------------------------------------------------
-    # BOTÓN CONVERTIR
+    # CONVERTIR
     # -----------------------------------------------------
 
     if st.button("convertir"):
@@ -481,9 +498,7 @@ if result:
 
         if display_output_text:
 
-            st.markdown(
-                "## Texto de salida:"
-            )
+            st.markdown("## Texto de salida:")
 
             st.write(
                 f" {output_text}"
@@ -496,9 +511,7 @@ if result:
 
     def remove_files(n):
 
-        mp3_files = glob.glob(
-            "temp/*mp3"
-        )
+        mp3_files = glob.glob("temp/*mp3")
 
         if len(mp3_files) != 0:
 
@@ -512,10 +525,7 @@ if result:
 
                     os.remove(f)
 
-                    print(
-                        "Deleted ",
-                        f
-                    )
+                    print("Deleted ", f)
 
 
     remove_files(7)
