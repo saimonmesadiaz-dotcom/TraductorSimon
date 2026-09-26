@@ -71,13 +71,20 @@ st.markdown(
 
     /* IMAGEN PRINCIPAL CENTRADA */
     [data-testid="stImage"] {{
-        display: flex;
-        justify-content: center;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+    }}
+
+    [data-testid="stImage"] > div {{
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
     }}
 
     [data-testid="stImage"] img {{
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto !important;
         border-radius: 12px;
     }}
 
@@ -97,47 +104,94 @@ st.markdown(
         text-align: left;
     }}
 
-    /* RECTÁNGULOS BLANCOS DE LOS DESPLEGABLES */
-    .stSelectbox [data-baseweb="select"] {{
+    /* -----------------------------------------------------
+       SELECTORES
+       ----------------------------------------------------- */
+
+    /* CUADRO PRINCIPAL */
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] {{
+        background: white !important;
         background-color: white !important;
-        border-radius: 10px;
+        color: black !important;
+        border-radius: 10px !important;
     }}
 
-    /* TEXTO DENTRO DEL RECTÁNGULO */
-    .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] {{
+    /* PARTE INTERNA DEL CUADRO */
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {{
+        background: white !important;
+        background-color: white !important;
         color: black !important;
     }}
 
-    .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] * {{
+    /* CONTENEDOR DEL VALOR */
+    div[data-testid="stSelectbox"]
+    div[data-baseweb="select"]
+    [data-baseweb="value-container"] {{
+        background: white !important;
         color: black !important;
     }}
 
-    /* FLECHA DEL DESPLEGABLE */
-    .stSelectbox [data-baseweb="select"] svg {{
+    /* TEXTO SELECCIONADO */
+    div[data-testid="stSelectbox"]
+    div[data-baseweb="select"]
+    [data-baseweb="value-container"] * {{
+        color: black !important;
+        -webkit-text-fill-color: black !important;
+    }}
+
+    /* INPUT INTERNO */
+    div[data-testid="stSelectbox"] input {{
+        color: black !important;
+        -webkit-text-fill-color: black !important;
+        background: white !important;
+    }}
+
+    /* FLECHA */
+    div[data-testid="stSelectbox"] svg {{
         fill: black !important;
-    }}
-
-    /* OPCIONES QUE APARECEN AL ABRIR EL DESPLEGABLE */
-    div[role="listbox"] {{
-        background-color: white !important;
-    }}
-
-    div[role="option"] {{
         color: black !important;
+    }}
+
+    /* ETIQUETAS ENCIMA DE LOS SELECTORES */
+    div[data-testid="stSelectbox"] label {{
+        color: white !important;
+    }}
+
+    div[data-testid="stSelectbox"] label p {{
+        color: white !important;
+    }}
+
+    /* -----------------------------------------------------
+       MENÚ DESPLEGABLE
+       ----------------------------------------------------- */
+
+    div[role="listbox"] {{
+        background: white !important;
         background-color: white !important;
+    }}
+
+    /* OPCIONES */
+    div[role="option"] {{
+        background: white !important;
+        background-color: white !important;
+        color: black !important;
     }}
 
     div[role="option"] * {{
         color: black !important;
+        background-color: white !important;
+        -webkit-text-fill-color: black !important;
     }}
 
-    /* ETIQUETAS ENCIMA DE LOS DESPLEGABLES */
-    .stSelectbox label {{
-        color: white !important;
+    /* OPCIÓN AL PASAR EL MOUSE */
+    div[role="option"]:hover {{
+        background-color: #eeeeee !important;
+        color: black !important;
     }}
 
-    .stSelectbox label p {{
-        color: white !important;
+    div[role="option"]:hover * {{
+        background-color: #eeeeee !important;
+        color: black !important;
     }}
 
     </style>
@@ -159,7 +213,11 @@ st.subheader("Escucho lo que quieres traducir.")
 # ---------------------------------------------------------
 
 image = Image.open("Imagen Traduccion y reconocimiento idiomas.jpg")
-st.image(image, width=600)
+
+st.image(
+    image,
+    width=600
+)
 
 
 # ---------------------------------------------------------
