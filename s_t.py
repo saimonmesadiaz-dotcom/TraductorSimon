@@ -1,7 +1,7 @@
+import streamlit as st
 import os
 import time
 import glob
-import streamlit as st
 
 from bokeh.models import Button
 from bokeh.models import CustomJS
@@ -22,102 +22,61 @@ st.set_page_config(
 
 
 # =========================================================
-# DISEÑO
+# FONDO
 # =========================================================
 
 st.markdown("""
 <style>
 
 .stApp {
-    background-image: url("fondo.jpg");
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.55),
+            rgba(0, 0, 0, 0.55)
+        ),
+        url("idiomas.JPG");
+
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
+
 
 /* Contenedor principal */
 
 .block-container {
     max-width: 900px;
     padding-top: 2rem;
-    padding-bottom: 2rem;
 }
 
 
-/* Títulos */
+/* Título */
 
 h1 {
     text-align: center;
-    color: #39402C !important;
-    font-size: 3rem !important;
-    margin-bottom: 0;
-}
-
-h2, h3 {
-    color: #4B5138 !important;
-}
-
-p, label {
-    color: #35372D !important;
 }
 
 
-/* Imagen principal */
-
-[data-testid="stImage"] {
-    display: flex;
-    justify-content: center;
-}
-
-
-/* Botones */
+/* Botón */
 
 .stButton > button {
-    background-color: #667044;
-    color: #F2E8D3;
-    border: none;
     border-radius: 10px;
     font-weight: 600;
-}
-
-.stButton > button:hover {
-    background-color: #505A36;
 }
 
 
 /* Selectores */
 
 div[data-baseweb="select"] > div {
-    background-color: #F1E6CF !important;
     border-radius: 10px;
 }
 
 
-/* Texto de los selectores */
+/* Imagen centrada */
 
-div[data-baseweb="select"] span {
-    color: #35372D !important;
-}
-
-
-/* Sidebar */
-
-section[data-testid="stSidebar"] {
-    background-color: rgba(230, 225, 205, 0.92);
-}
-
-
-/* Caja de texto */
-
-.stTextInput input {
-    color: #000000 !important;
-}
-
-
-/* Checkbox */
-
-.stCheckbox label {
-    color: #35372D !important;
+[data-testid="stImage"] {
+    display: flex;
+    justify-content: center;
 }
 
 </style>
@@ -135,22 +94,30 @@ except:
 
 
 # =========================================================
-# ENCABEZADO
+# TÍTULO
 # =========================================================
 
 st.title("TRADUCTOR.")
 
-st.subheader("Escucho lo que quieres traducir.")
-
 
 # =========================================================
-# IMAGEN
+# IMAGEN ORIGINAL
 # =========================================================
+
+# DEJA AQUÍ EL MISMO NOMBRE DE LA IMAGEN
+# QUE TENÍAS EN TU CÓDIGO ORIGINAL.
 
 st.image(
-    "Imagen Traducción y Reconocimiento.png",
+    "Imagen Traduccion y Reconocimiento.png",
     width=500
 )
+
+
+# =========================================================
+# SUBTÍTULO
+# =========================================================
+
+st.subheader("Escucho lo que quieres traducir.")
 
 
 # =========================================================
@@ -172,7 +139,9 @@ with st.sidebar:
 # RECONOCIMIENTO DE VOZ
 # =========================================================
 
-st.write("Toca el Botón y habla lo que quieres traducir")
+st.write(
+    "Toca el Botón y habla lo que quieres traducir"
+)
 
 
 stt_button = Button(
@@ -185,13 +154,14 @@ stt_button = Button(
 stt_button.js_on_event(
     "button_click",
     CustomJS(code="""
+
         var recognition = new webkitSpeechRecognition();
 
         recognition.continuous = false;
         recognition.interimResults = true;
         recognition.lang = 'es-ES';
 
-        recognition.onresult = function (e) {
+        recognition.onresult = function(e) {
 
             var value = "";
 
@@ -220,7 +190,7 @@ stt_button.js_on_event(
 
             }
 
-        }
+        };
 
         recognition.onend = function() {
 
@@ -228,7 +198,7 @@ stt_button.js_on_event(
                 "Reconocimiento detenido"
             );
 
-        }
+        };
 
         recognition.start();
 
@@ -263,31 +233,14 @@ if result:
         # TEXTO RECONOCIDO
         # =================================================
 
-        st.subheader("Texto reconocido")
+        st.subheader(
+            "Texto reconocido"
+        )
 
         st.write(text)
 
 
         translator = Translator()
-
-
-        # =================================================
-        # IDIOMAS
-        # =================================================
-
-        idiomas = {
-
-            "Inglés": "en",
-            "Español": "es",
-            "Italiano": "it",
-            "Frances": "fr",
-            "Aleman": "de",
-            "Checo": "cs",
-            "Coreano": "ko",
-            "Mandarín": "zh-cn",
-            "Japonés": "ja"
-
-        }
 
 
         # =================================================
@@ -317,6 +270,25 @@ if result:
                     "Japonés"
                 )
             )
+
+
+        # =================================================
+        # IDIOMAS
+        # =================================================
+
+        idiomas = {
+
+            "Inglés": "en",
+            "Español": "es",
+            "Italiano": "it",
+            "Frances": "fr",
+            "Aleman": "de",
+            "Checo": "cs",
+            "Coreano": "ko",
+            "Mandarín": "zh-cn",
+            "Japonés": "ja"
+
+        }
 
 
         input_language = idiomas[in_lang]
@@ -471,7 +443,9 @@ if result:
             audio_bytes = audio_file.read()
 
 
-            st.subheader("Tu audio")
+            st.subheader(
+                "Tu audio"
+            )
 
 
             st.audio(
@@ -518,6 +492,5 @@ if result:
 
 
         remove_files(7)
-    
 
 
