@@ -1,4 +1,5 @@
 import os
+import base64
 import streamlit as st
 from bokeh.models.widgets import Button
 from bokeh.models import CustomJS
@@ -6,41 +7,32 @@ from streamlit_bokeh_events import streamlit_bokeh_events
 from PIL import Image
 import time
 import glob
-import base64
 
 from gtts import gTTS
 from googletrans import Translator
 
 
-# -------------------------------
-# CONFIGURACIÓN
-# -------------------------------
+# ---------------------------------------------------------
+# CONFIGURACIÓN VISUAL
+# ---------------------------------------------------------
 
 st.set_page_config(
     page_title="Traductor",
+    page_icon="🌎",
     layout="centered"
 )
 
-
-# -------------------------------
-# IMAGEN DE FONDO
-# -------------------------------
-
-with open("IDIOMAS.jpg", "rb") as f:
+# Imagen de fondo
+with open("IDIOMAS.JPG", "rb") as f:
     background = f.read()
 
 background_base64 = base64.b64encode(background).decode()
-
-
-# -------------------------------
-# ESTILO VISUAL
-# -------------------------------
 
 st.markdown(
     f"""
     <style>
 
-    /* FONDO */
+    /* FONDO DE LA PÁGINA */
     .stApp {{
         background-image:
             linear-gradient(
@@ -54,12 +46,10 @@ st.markdown(
         background-attachment: fixed;
     }}
 
-
-    /* CONTENIDO PRINCIPAL */
+    /* CONTENIDO PRINCIPAL CENTRADO */
     .main .block-container {{
         text-align: center;
     }}
-
 
     /* TÍTULOS */
     h1 {{
@@ -74,13 +64,13 @@ st.markdown(
         color: white;
     }}
 
+    /* TEXTOS */
     p {{
         text-align: center;
         color: white;
     }}
 
-
-    /* CENTRAR IMAGEN DE TRADUCCIÓN */
+    /* IMAGEN PRINCIPAL CENTRADA */
     [data-testid="stImage"] {{
         display: flex;
         justify-content: center;
@@ -89,63 +79,8 @@ st.markdown(
     [data-testid="stImage"] img {{
         margin-left: auto;
         margin-right: auto;
-    }}
-
-
-    /* BOTÓN */
-    .stButton > button {{
-        width: 300px;
-        height: 50px;
         border-radius: 12px;
-        border: none;
-        font-size: 18px;
-        font-weight: 600;
-        background-color: #ffffff;
-        color: #222222;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
     }}
-
-    .stButton > button:hover {{
-        background-color: #f1f1f1;
-        border: none;
-    }}
-
-
-    /* SELECTORES */
-    .stSelectbox > div > div {{
-        background-color: rgba(255,255,255,0.95);
-        border-radius: 10px;
-    }}
-
-    /* Texto seleccionado */
-    .stSelectbox div[data-baseweb="select"] div {{
-        color: black !important;
-    }}
-
-    /* Texto de las opciones */
-    div[role="option"] {{
-        color: black !important;
-    }}
-
-    div[role="option"] span {{
-        color: black !important;
-    }}
-
-    /* Texto de las etiquetas de los selectores */
-    .stSelectbox label {{
-        color: white !important;
-    }}
-
-
-    /* CHECKBOX */
-    .stCheckbox label {{
-        color: white !important;
-    }}
-
-    .stCheckbox p {{
-        color: white !important;
-    }}
-
 
     /* SIDEBAR */
     [data-testid="stSidebar"] {{
@@ -163,37 +98,77 @@ st.markdown(
         text-align: left;
     }}
 
+    /* RECTÁNGULOS BLANCOS DE LOS DESPLEGABLES */
+    .stSelectbox [data-baseweb="select"] {{
+        background-color: white !important;
+        border-radius: 10px;
+    }}
+
+    /* TEXTO DENTRO DEL RECTÁNGULO */
+    .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] {{
+        color: black !important;
+    }}
+
+    .stSelectbox [data-baseweb="select"] [data-baseweb="value-container"] * {{
+        color: black !important;
+    }}
+
+    /* FLECHA DEL DESPLEGABLE */
+    .stSelectbox [data-baseweb="select"] svg {{
+        fill: black !important;
+    }}
+
+    /* OPCIONES QUE APARECEN AL ABRIR EL DESPLEGABLE */
+    div[role="listbox"] {{
+        background-color: white !important;
+    }}
+
+    div[role="option"] {{
+        color: black !important;
+        background-color: white !important;
+    }}
+
+    div[role="option"] * {{
+        color: black !important;
+    }}
+
+    /* ETIQUETAS ENCIMA DE LOS DESPLEGABLES */
+    .stSelectbox label {{
+        color: white !important;
+    }}
+
+    .stSelectbox label p {{
+        color: white !important;
+    }}
+
     </style>
     """,
     unsafe_allow_html=True
 )
 
 
-# -------------------------------
-# CONTENIDO PRINCIPAL
-# -------------------------------
+# ---------------------------------------------------------
+# TÍTULO
+# ---------------------------------------------------------
 
-st.title("🌎 TRADUCTOR.")
+st.title("TRADUCTOR.")
 st.subheader("Escucho lo que quieres traducir.")
 
 
-image = Image.open(
-    "Imagen Traduccion y reconocimiento idiomas.jpg"
-)
+# ---------------------------------------------------------
+# IMAGEN PRINCIPAL
+# ---------------------------------------------------------
 
-st.image(
-    image,
-    width=300
-)
+image = Image.open("Imagen Traduccion y reconocimiento idiomas.jpg")
+st.image(image, width=300)
 
 
-# -------------------------------
+# ---------------------------------------------------------
 # SIDEBAR
-# -------------------------------
+# ---------------------------------------------------------
 
 with st.sidebar:
     st.subheader("Traductor.")
-
     st.write(
         "Presiona el botón, cuando escuches la señal "
         "habla lo que quieres traducir, luego selecciona "
@@ -201,21 +176,17 @@ with st.sidebar:
     )
 
 
-# -------------------------------
+# ---------------------------------------------------------
 # RECONOCIMIENTO DE VOZ
-# -------------------------------
+# ---------------------------------------------------------
 
-st.write(
-    "Toca el Botón y habla lo que quieres traducir"
-)
-
+st.write("Toca el Botón y habla lo que quires traducir")
 
 stt_button = Button(
     label=" Escuchar  🎤",
     width=300,
     height=50
 )
-
 
 stt_button.js_on_event(
     "button_click",
@@ -237,9 +208,7 @@ stt_button.js_on_event(
             ) {
 
                 if (e.results[i].isFinal) {
-
                     value += e.results[i][0].transcript;
-
                 }
 
             }
@@ -258,11 +227,7 @@ stt_button.js_on_event(
         }
 
         recognition.onend = function() {
-
-            console.log(
-                "Reconocimiento detenido"
-            );
-
+            console.log("Reconocimiento detenido");
         }
 
         recognition.start();
@@ -280,44 +245,34 @@ result = streamlit_bokeh_events(
 )
 
 
-# -------------------------------
-# RESULTADO
-# -------------------------------
+# ---------------------------------------------------------
+# TRADUCCIÓN
+# ---------------------------------------------------------
 
 if result:
 
     if "GET_TEXT" in result:
 
-        st.write(
-            result.get("GET_TEXT")
-        )
-
+        st.write(result.get("GET_TEXT"))
 
     try:
         os.mkdir("temp")
-
     except:
         pass
 
-
     st.title("Texto a Audio")
-
 
     translator = Translator()
 
-
-    text = str(
-        result.get("GET_TEXT")
-    )
+    text = str(result.get("GET_TEXT"))
 
 
-    # -------------------------------
+    # -----------------------------------------------------
     # IDIOMA DE ENTRADA
-    # -------------------------------
+    # -----------------------------------------------------
 
     in_lang = st.selectbox(
         "Selecciona el lenguaje de Entrada",
-
         (
             "Inglés",
             "Español",
@@ -330,51 +285,40 @@ if result:
         ),
     )
 
-
     if in_lang == "Inglés":
-
         input_language = "en"
 
     elif in_lang == "Español":
-
         input_language = "es"
 
     elif in_lang == "Italiano":
-
         input_language = "it"
 
     elif in_lang == "Frances":
-
         input_language = "fr"
 
     elif in_lang == "Aleman":
-
         input_language = "de"
 
     elif in_lang == "Checo":
-
         input_language = "cs"
 
     elif in_lang == "Coreano":
-
         input_language = "ko"
 
     elif in_lang == "Mandarín":
-
         input_language = "zh-cn"
 
     elif in_lang == "Japonés":
-
         input_language = "ja"
 
 
-    # -------------------------------
+    # -----------------------------------------------------
     # IDIOMA DE SALIDA
-    # -------------------------------
+    # -----------------------------------------------------
 
     out_lang = st.selectbox(
         "Selecciona el lenguaje de salida",
-
         (
             "Inglés",
             "Español",
@@ -387,51 +331,40 @@ if result:
         ),
     )
 
-
     if out_lang == "Inglés":
-
         output_language = "en"
 
     elif out_lang == "Español":
-
         output_language = "es"
 
     elif out_lang == "Italiano":
-
         output_language = "it"
 
     elif out_lang == "Frances":
-
         output_language = "fr"
 
     elif out_lang == "Aleman":
-
         output_language = "de"
 
     elif out_lang == "Checo":
-
         output_language = "cs"
 
     elif out_lang == "Coreano":
-
         output_language = "ko"
 
     elif out_lang == "Mandarín":
-
         output_language = "zh-cn"
 
     elif out_lang == "Japonés":
-
         output_language = "ja"
 
 
-    # -------------------------------
+    # -----------------------------------------------------
     # ACENTO
-    # -------------------------------
+    # -----------------------------------------------------
 
     english_accent = st.selectbox(
         "Selecciona el acento",
-
         (
             "Defecto",
             "Español",
@@ -446,41 +379,33 @@ if result:
 
 
     if english_accent == "Defecto":
-
         tld = "com"
 
     elif english_accent == "Español":
-
         tld = "com.mx"
 
     elif english_accent == "Reino Unido":
-
         tld = "co.uk"
 
     elif english_accent == "Estados Unidos":
-
         tld = "com"
 
     elif english_accent == "Canada":
-
         tld = "ca"
 
     elif english_accent == "Australia":
-
         tld = "com.au"
 
     elif english_accent == "Irlanda":
-
         tld = "ie"
 
     elif english_accent == "Sudáfrica":
-
         tld = "co.za"
 
 
-    # -------------------------------
-    # TEXTO A AUDIO
-    # -------------------------------
+    # -----------------------------------------------------
+    # TEXTO A VOZ
+    # -----------------------------------------------------
 
     def text_to_speech(
         input_language,
@@ -505,34 +430,30 @@ if result:
         )
 
         try:
-
             my_file_name = text[0:20]
 
         except:
-
             my_file_name = "audio"
-
 
         tts.save(
             f"temp/{my_file_name}.mp3"
         )
 
-
         return my_file_name, trans_text
 
 
-    # -------------------------------
+    # -----------------------------------------------------
     # MOSTRAR TEXTO
-    # -------------------------------
+    # -----------------------------------------------------
 
     display_output_text = st.checkbox(
         "Mostrar el texto"
     )
 
 
-    # -------------------------------
-    # CONVERTIR
-    # -------------------------------
+    # -----------------------------------------------------
+    # BOTÓN CONVERTIR
+    # -----------------------------------------------------
 
     if st.button("convertir"):
 
@@ -543,20 +464,14 @@ if result:
             tld
         )
 
-
         audio_file = open(
             f"temp/{result}.mp3",
             "rb"
         )
 
-
         audio_bytes = audio_file.read()
 
-
-        st.markdown(
-            "## 🔊 Tu audio:"
-        )
-
+        st.markdown("## Tú audio:")
 
         st.audio(
             audio_bytes,
@@ -568,7 +483,7 @@ if result:
         if display_output_text:
 
             st.markdown(
-                "## 📝 Texto de salida:"
+                "## Texto de salida:"
             )
 
             st.write(
@@ -576,9 +491,9 @@ if result:
             )
 
 
-    # -------------------------------
+    # -----------------------------------------------------
     # ELIMINAR ARCHIVOS ANTIGUOS
-    # -------------------------------
+    # -----------------------------------------------------
 
     def remove_files(n):
 
@@ -586,13 +501,11 @@ if result:
             "temp/*mp3"
         )
 
-
         if len(mp3_files) != 0:
 
             now = time.time()
 
             n_days = n * 86400
-
 
             for f in mp3_files:
 
