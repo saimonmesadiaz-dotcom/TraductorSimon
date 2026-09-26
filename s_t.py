@@ -107,60 +107,71 @@ st.markdown(
     }}
 
 
-    /* =====================================================
+  /* =====================================================
        SELECTORES
        ===================================================== */
 
-    /* ETIQUETAS ENCIMA DE LOS CUADROS */
+    /* ETIQUETAS ENCIMA DEL SELECTOR */
     .stSelectbox label,
-    .stSelectbox label p {{
+    .stSelectbox label p {
         color: white !important;
-    }}
+    }
 
-    /* RECTÁNGULO DEL SELECTOR */
-    .stSelectbox [data-baseweb="select"] {{
-        background-color: white !important;
-        border-radius: 10px;
-    }}
-
-    /* TEXTO DENTRO DEL RECTÁNGULO */
-    .stSelectbox [data-baseweb="select"] * {{
-        color: black !important;
-    }}
-
-    /* MENÚ QUE APARECE AL ABRIR */
-    div[role="listbox"] {{
-        background-color: white !important;
-    }}
-
-    /* OPCIONES DEL MENÚ */
-    div[role="option"] {{
+    /* CUADRO DEL SELECTOR */
+    .stSelectbox div[data-baseweb="select"] > div {
         background-color: white !important;
         color: black !important;
-    }}
+        border-radius: 10px !important;
+    }
 
-    /* TEXTO DE LAS OPCIONES */
-    div[role="option"] *,
-    div[role="option"] span,
-    div[role="option"] p {{
+    /* TEXTO QUE SELECCIONASTE */
+    .stSelectbox div[data-baseweb="select"] input {
         color: black !important;
-    }}
+    }
 
-    /* OPCIÓN AL PASAR EL MOUSE */
-    div[role="option"]:hover {{
-        background-color: #eeeeee !important;
-    }}
+    .stSelectbox div[data-baseweb="select"] span {
+        color: black !important;
+    }
 
-    /* FLECHA DEL SELECTOR */
-    .stSelectbox svg {{
+    .stSelectbox div[data-baseweb="select"] div {
+        color: black !important;
+    }
+
+    /* FLECHA */
+    .stSelectbox div[data-baseweb="select"] svg {
         fill: black !important;
-    }}
+        color: black !important;
+    }
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+    /* MENÚ DESPLEGABLE */
+    div[data-baseweb="popover"] {
+        background-color: white !important;
+    }
 
+    /* CONTENEDOR DE LAS OPCIONES */
+    div[role="listbox"] {
+        background-color: white !important;
+        color: black !important;
+    }
+
+    /* CADA OPCIÓN */
+    div[role="option"] {
+        background-color: white !important;
+        color: black !important;
+    }
+
+    /* TEXTO DE CADA OPCIÓN */
+    div[role="option"] span,
+    div[role="option"] div,
+    div[role="option"] p {
+        color: black !important;
+    }
+
+    /* AL PASAR EL MOUSE */
+    div[role="option"]:hover {
+        background-color: #eeeeee !important;
+        color: black !important;
+    }
 
 # ---------------------------------------------------------
 # TÍTULO
