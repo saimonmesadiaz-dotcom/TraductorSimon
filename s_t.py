@@ -6,13 +6,14 @@ from streamlit_bokeh_events import streamlit_bokeh_events
 from PIL import Image
 import time
 import glob
+import base64
 
 from gtts import gTTS
 from googletrans import Translator
 
 
 # -------------------------------
-# ESTILO VISUAL
+# CONFIGURACIÓN
 # -------------------------------
 
 st.set_page_config(
@@ -20,13 +21,20 @@ st.set_page_config(
     layout="centered"
 )
 
-# Imagen de fondo
+
+# -------------------------------
+# IMAGEN DE FONDO
+# -------------------------------
+
 with open("IDIOMAS.jpg", "rb") as f:
     background = f.read()
 
-import base64
-
 background_base64 = base64.b64encode(background).decode()
+
+
+# -------------------------------
+# ESTILO VISUAL
+# -------------------------------
 
 st.markdown(
     f"""
@@ -41,23 +49,39 @@ st.markdown(
         background-attachment: fixed;
     }}
 
-    .main {{
-        padding-top: 2rem;
+    .main .block-container {{
+        text-align: center;
+    }}
+
+    .main .block-container img {{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }}
+
+    .main .block-container .stMarkdown {{
+        text-align: center;
+    }}
+
+    .main .block-container label {{
+        text-align: center;
     }}
 
     h1 {{
         text-align: center;
         font-size: 42px;
-        color: #222222;
+        color: white;
         font-weight: 700;
     }}
 
     h2, h3 {{
-        color: #222222;
+        text-align: center;
+        color: white;
     }}
 
     p {{
-        color: #333333;
+        text-align: center;
+        color: white;
     }}
 
     .stButton > button {{
@@ -82,21 +106,19 @@ st.markdown(
         border-radius: 10px;
     }}
 
-    .stTextInput > div > div > input {{
-        color: black;
-        background-color: white;
-    }}
-
     [data-testid="stSidebar"] {{
         background-color: rgba(255,255,255,0.92);
+        text-align: left;
     }}
 
     [data-testid="stSidebar"] h3 {{
         color: #222222;
+        text-align: left;
     }}
 
     [data-testid="stSidebar"] p {{
         color: #333333;
+        text-align: left;
     }}
 
     </style>
@@ -106,17 +128,21 @@ st.markdown(
 
 
 # -------------------------------
-# CONTENIDO
+# CONTENIDO PRINCIPAL
 # -------------------------------
 
-st.title("🌎 TRADUCTOR")
+st.title("🌎 TRADUCTOR.")
 st.subheader("Escucho lo que quieres traducir.")
 
 
-image = Image.open('Imagen Traduccion y reconocimiento idiomas.jpg')
+image = Image.open("Imagen Traduccion y reconocimiento idiomas.jpg")
 
 st.image(image, width=300)
 
+
+# -------------------------------
+# SIDEBAR
+# -------------------------------
 
 with st.sidebar:
     st.subheader("Traductor.")
@@ -126,6 +152,10 @@ with st.sidebar:
         "la configuración de lenguaje que necesites."
     )
 
+
+# -------------------------------
+# RECONOCIMIENTO DE VOZ
+# -------------------------------
 
 st.write("Toca el Botón y habla lo que quieres traducir")
 
@@ -139,13 +169,19 @@ stt_button = Button(
 
 stt_button.js_on_event("button_click", CustomJS(code="""
     var recognition = new webkitSpeechRecognition();
+
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = 'es-ES';
 
     recognition.onresult = function (e) {
         var value = "";
-        for (var i = e.resultIndex; i < e.results.length; ++i) {
+
+        for (
+            var i = e.resultIndex;
+            i < e.results.length;
+            ++i
+        ) {
             if (e.results[i].isFinal) {
                 value += e.results[i][0].transcript;
             }
@@ -153,7 +189,10 @@ stt_button.js_on_event("button_click", CustomJS(code="""
 
         if (value != "") {
             document.dispatchEvent(
-                new CustomEvent("GET_TEXT", {detail: value})
+                new CustomEvent(
+                    "GET_TEXT",
+                    {detail: value}
+                )
             );
         }
     }
@@ -176,6 +215,10 @@ result = streamlit_bokeh_events(
 )
 
 
+# -------------------------------
+# RESULTADO
+# -------------------------------
+
 if result:
 
     if "GET_TEXT" in result:
@@ -186,12 +229,19 @@ if result:
     except:
         pass
 
+
     st.title("Texto a Audio")
+
 
     translator = Translator()
 
+
     text = str(result.get("GET_TEXT"))
 
+
+    # -------------------------------
+    # IDIOMA DE ENTRADA
+    # -------------------------------
 
     in_lang = st.selectbox(
         "Selecciona el lenguaje de Entrada",
@@ -210,23 +260,35 @@ if result:
 
     if in_lang == "Inglés":
         input_language = "en"
+
     elif in_lang == "Español":
         input_language = "es"
+
     elif in_lang == "Italiano":
         input_language = "it"
+
     elif in_lang == "Frances":
         input_language = "fr"
+
     elif in_lang == "Aleman":
         input_language = "de"
+
     elif in_lang == "Checo":
         input_language = "cs"
+
     elif in_lang == "Coreano":
         input_language = "ko"
+
     elif in_lang == "Mandarín":
         input_language = "zh-cn"
+
     elif in_lang == "Japonés":
         input_language = "ja"
 
+
+    # -------------------------------
+    # IDIOMA DE SALIDA
+    # -------------------------------
 
     out_lang = st.selectbox(
         "Selecciona el lenguaje de salida",
@@ -245,23 +307,35 @@ if result:
 
     if out_lang == "Inglés":
         output_language = "en"
+
     elif out_lang == "Español":
         output_language = "es"
+
     elif out_lang == "Italiano":
         output_language = "it"
+
     elif out_lang == "Frances":
         output_language = "fr"
+
     elif out_lang == "Aleman":
         output_language = "de"
+
     elif out_lang == "Checo":
         output_language = "cs"
+
     elif out_lang == "Coreano":
         output_language = "ko"
+
     elif out_lang == "Mandarín":
         output_language = "zh-cn"
+
     elif out_lang == "Japonés":
         output_language = "ja"
 
+
+    # -------------------------------
+    # ACENTO
+    # -------------------------------
 
     english_accent = st.selectbox(
         "Selecciona el acento",
@@ -280,23 +354,39 @@ if result:
 
     if english_accent == "Defecto":
         tld = "com"
+
     elif english_accent == "Español":
         tld = "com.mx"
+
     elif english_accent == "Reino Unido":
         tld = "co.uk"
+
     elif english_accent == "Estados Unidos":
         tld = "com"
+
     elif english_accent == "Canada":
         tld = "ca"
+
     elif english_accent == "Australia":
         tld = "com.au"
+
     elif english_accent == "Irlanda":
         tld = "ie"
+
     elif english_accent == "Sudáfrica":
         tld = "co.za"
 
 
-    def text_to_speech(input_language, output_language, text, tld):
+    # -------------------------------
+    # TEXTO A AUDIO
+    # -------------------------------
+
+    def text_to_speech(
+        input_language,
+        output_language,
+        text,
+        tld
+    ):
 
         translation = translator.translate(
             text,
@@ -315,16 +405,29 @@ if result:
 
         try:
             my_file_name = text[0:20]
+
         except:
             my_file_name = "audio"
 
-        tts.save(f"temp/{my_file_name}.mp3")
+        tts.save(
+            f"temp/{my_file_name}.mp3"
+        )
 
         return my_file_name, trans_text
 
 
-    display_output_text = st.checkbox("Mostrar el texto")
+    # -------------------------------
+    # MOSTRAR TEXTO
+    # -------------------------------
 
+    display_output_text = st.checkbox(
+        "Mostrar el texto"
+    )
+
+
+    # -------------------------------
+    # CONVERTIR
+    # -------------------------------
 
     if st.button("convertir"):
 
@@ -335,14 +438,18 @@ if result:
             tld
         )
 
+
         audio_file = open(
             f"temp/{result}.mp3",
             "rb"
         )
 
+
         audio_bytes = audio_file.read()
 
+
         st.markdown("## 🔊 Tu audio:")
+
 
         st.audio(
             audio_bytes,
@@ -350,16 +457,27 @@ if result:
             start_time=0
         )
 
+
         if display_output_text:
 
-            st.markdown("## 📝 Texto de salida:")
+            st.markdown(
+                "## 📝 Texto de salida:"
+            )
 
-            st.write(f" {output_text}")
+            st.write(
+                f" {output_text}"
+            )
 
+
+    # -------------------------------
+    # ELIMINAR ARCHIVOS ANTIGUOS
+    # -------------------------------
 
     def remove_files(n):
 
-        mp3_files = glob.glob("temp/*mp3")
+        mp3_files = glob.glob(
+            "temp/*mp3"
+        )
 
         if len(mp3_files) != 0:
 
@@ -373,7 +491,10 @@ if result:
 
                     os.remove(f)
 
-                    print("Deleted ", f)
+                    print(
+                        "Deleted ",
+                        f
+                    )
 
 
     remove_files(7)
