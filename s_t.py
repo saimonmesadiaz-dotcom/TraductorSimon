@@ -40,33 +40,28 @@ st.markdown(
     f"""
     <style>
 
+    /* FONDO */
     .stApp {{
         background-image:
-            linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+            linear-gradient(
+                rgba(0,0,0,0.55),
+                rgba(0,0,0,0.55)
+            ),
             url("data:image/jpg;base64,{background_base64}");
+
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
     }}
 
+
+    /* CONTENIDO PRINCIPAL */
     .main .block-container {{
         text-align: center;
     }}
 
-    .main .block-container img {{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }}
 
-    .main .block-container .stMarkdown {{
-        text-align: center;
-    }}
-
-    .main .block-container label {{
-        text-align: center;
-    }}
-
+    /* TÍTULOS */
     h1 {{
         text-align: center;
         font-size: 42px;
@@ -84,6 +79,20 @@ st.markdown(
         color: white;
     }}
 
+
+    /* CENTRAR IMAGEN DE TRADUCCIÓN */
+    [data-testid="stImage"] {{
+        display: flex;
+        justify-content: center;
+    }}
+
+    [data-testid="stImage"] img {{
+        margin-left: auto;
+        margin-right: auto;
+    }}
+
+
+    /* BOTÓN */
     .stButton > button {{
         width: 300px;
         height: 50px;
@@ -101,11 +110,44 @@ st.markdown(
         border: none;
     }}
 
+
+    /* SELECTORES */
     .stSelectbox > div > div {{
         background-color: rgba(255,255,255,0.95);
         border-radius: 10px;
     }}
 
+    /* Texto seleccionado */
+    .stSelectbox div[data-baseweb="select"] div {{
+        color: black !important;
+    }}
+
+    /* Texto de las opciones */
+    div[role="option"] {{
+        color: black !important;
+    }}
+
+    div[role="option"] span {{
+        color: black !important;
+    }}
+
+    /* Texto de las etiquetas de los selectores */
+    .stSelectbox label {{
+        color: white !important;
+    }}
+
+
+    /* CHECKBOX */
+    .stCheckbox label {{
+        color: white !important;
+    }}
+
+    .stCheckbox p {{
+        color: white !important;
+    }}
+
+
+    /* SIDEBAR */
     [data-testid="stSidebar"] {{
         background-color: rgba(255,255,255,0.92);
         text-align: left;
@@ -135,9 +177,14 @@ st.title("🌎 TRADUCTOR.")
 st.subheader("Escucho lo que quieres traducir.")
 
 
-image = Image.open("Imagen Traduccion y reconocimiento idiomas.jpg")
+image = Image.open(
+    "Imagen Traduccion y reconocimiento idiomas.jpg"
+)
 
-st.image(image, width=300)
+st.image(
+    image,
+    width=300
+)
 
 
 # -------------------------------
@@ -146,6 +193,7 @@ st.image(image, width=300)
 
 with st.sidebar:
     st.subheader("Traductor.")
+
     st.write(
         "Presiona el botón, cuando escuches la señal "
         "habla lo que quieres traducir, luego selecciona "
@@ -157,7 +205,9 @@ with st.sidebar:
 # RECONOCIMIENTO DE VOZ
 # -------------------------------
 
-st.write("Toca el Botón y habla lo que quieres traducir")
+st.write(
+    "Toca el Botón y habla lo que quieres traducir"
+)
 
 
 stt_button = Button(
@@ -167,42 +217,57 @@ stt_button = Button(
 )
 
 
-stt_button.js_on_event("button_click", CustomJS(code="""
-    var recognition = new webkitSpeechRecognition();
+stt_button.js_on_event(
+    "button_click",
+    CustomJS(code="""
+        var recognition = new webkitSpeechRecognition();
 
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.lang = 'es-ES';
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = 'es-ES';
 
-    recognition.onresult = function (e) {
-        var value = "";
+        recognition.onresult = function (e) {
 
-        for (
-            var i = e.resultIndex;
-            i < e.results.length;
-            ++i
-        ) {
-            if (e.results[i].isFinal) {
-                value += e.results[i][0].transcript;
+            var value = "";
+
+            for (
+                var i = e.resultIndex;
+                i < e.results.length;
+                ++i
+            ) {
+
+                if (e.results[i].isFinal) {
+
+                    value += e.results[i][0].transcript;
+
+                }
+
             }
+
+            if (value != "") {
+
+                document.dispatchEvent(
+                    new CustomEvent(
+                        "GET_TEXT",
+                        {detail: value}
+                    )
+                );
+
+            }
+
         }
 
-        if (value != "") {
-            document.dispatchEvent(
-                new CustomEvent(
-                    "GET_TEXT",
-                    {detail: value}
-                )
+        recognition.onend = function() {
+
+            console.log(
+                "Reconocimiento detenido"
             );
+
         }
-    }
 
-    recognition.onend = function() {
-        console.log("Reconocimiento detenido");
-    }
-
-    recognition.start();
-"""))
+        recognition.start();
+    """)
+)
 
 
 result = streamlit_bokeh_events(
@@ -222,10 +287,15 @@ result = streamlit_bokeh_events(
 if result:
 
     if "GET_TEXT" in result:
-        st.write(result.get("GET_TEXT"))
+
+        st.write(
+            result.get("GET_TEXT")
+        )
+
 
     try:
         os.mkdir("temp")
+
     except:
         pass
 
@@ -236,7 +306,9 @@ if result:
     translator = Translator()
 
 
-    text = str(result.get("GET_TEXT"))
+    text = str(
+        result.get("GET_TEXT")
+    )
 
 
     # -------------------------------
@@ -245,6 +317,7 @@ if result:
 
     in_lang = st.selectbox(
         "Selecciona el lenguaje de Entrada",
+
         (
             "Inglés",
             "Español",
@@ -259,30 +332,39 @@ if result:
 
 
     if in_lang == "Inglés":
+
         input_language = "en"
 
     elif in_lang == "Español":
+
         input_language = "es"
 
     elif in_lang == "Italiano":
+
         input_language = "it"
 
     elif in_lang == "Frances":
+
         input_language = "fr"
 
     elif in_lang == "Aleman":
+
         input_language = "de"
 
     elif in_lang == "Checo":
+
         input_language = "cs"
 
     elif in_lang == "Coreano":
+
         input_language = "ko"
 
     elif in_lang == "Mandarín":
+
         input_language = "zh-cn"
 
     elif in_lang == "Japonés":
+
         input_language = "ja"
 
 
@@ -292,6 +374,7 @@ if result:
 
     out_lang = st.selectbox(
         "Selecciona el lenguaje de salida",
+
         (
             "Inglés",
             "Español",
@@ -306,30 +389,39 @@ if result:
 
 
     if out_lang == "Inglés":
+
         output_language = "en"
 
     elif out_lang == "Español":
+
         output_language = "es"
 
     elif out_lang == "Italiano":
+
         output_language = "it"
 
     elif out_lang == "Frances":
+
         output_language = "fr"
 
     elif out_lang == "Aleman":
+
         output_language = "de"
 
     elif out_lang == "Checo":
+
         output_language = "cs"
 
     elif out_lang == "Coreano":
+
         output_language = "ko"
 
     elif out_lang == "Mandarín":
+
         output_language = "zh-cn"
 
     elif out_lang == "Japonés":
+
         output_language = "ja"
 
 
@@ -339,6 +431,7 @@ if result:
 
     english_accent = st.selectbox(
         "Selecciona el acento",
+
         (
             "Defecto",
             "Español",
@@ -353,27 +446,35 @@ if result:
 
 
     if english_accent == "Defecto":
+
         tld = "com"
 
     elif english_accent == "Español":
+
         tld = "com.mx"
 
     elif english_accent == "Reino Unido":
+
         tld = "co.uk"
 
     elif english_accent == "Estados Unidos":
+
         tld = "com"
 
     elif english_accent == "Canada":
+
         tld = "ca"
 
     elif english_accent == "Australia":
+
         tld = "com.au"
 
     elif english_accent == "Irlanda":
+
         tld = "ie"
 
     elif english_accent == "Sudáfrica":
+
         tld = "co.za"
 
 
@@ -404,14 +505,18 @@ if result:
         )
 
         try:
+
             my_file_name = text[0:20]
 
         except:
+
             my_file_name = "audio"
+
 
         tts.save(
             f"temp/{my_file_name}.mp3"
         )
+
 
         return my_file_name, trans_text
 
@@ -448,7 +553,9 @@ if result:
         audio_bytes = audio_file.read()
 
 
-        st.markdown("## 🔊 Tu audio:")
+        st.markdown(
+            "## 🔊 Tu audio:"
+        )
 
 
         st.audio(
@@ -479,11 +586,13 @@ if result:
             "temp/*mp3"
         )
 
+
         if len(mp3_files) != 0:
 
             now = time.time()
 
             n_days = n * 86400
+
 
             for f in mp3_files:
 
