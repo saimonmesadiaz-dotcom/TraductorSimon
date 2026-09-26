@@ -18,6 +18,7 @@ from googletrans import Translator
 
 st.set_page_config(
     page_title="Traductor",
+    page_icon="🌎",
     layout="centered"
 )
 
@@ -26,7 +27,7 @@ st.set_page_config(
 # IMAGEN DE FONDO
 # ---------------------------------------------------------
 
-with open("IDIOMAS.jpg", "rb") as f:
+with open("IDIOMAS.JPG", "rb") as f:
     background = f.read()
 
 background_base64 = base64.b64encode(background).decode()
@@ -40,7 +41,7 @@ st.markdown(
     f"""
     <style>
 
-    /* FONDO DE LA PÁGINA */
+    /* FONDO */
     .stApp {{
         background-image:
             linear-gradient(
@@ -54,23 +55,26 @@ st.markdown(
         background-attachment: fixed;
     }}
 
-    /* CONTENIDO PRINCIPAL CENTRADO */
+
+    /* CONTENIDO PRINCIPAL */
     .main .block-container {{
         text-align: center;
     }}
+
 
     /* TÍTULOS */
     h1 {{
         text-align: center;
         font-size: 42px;
-        color: white;
+        color: white !important;
         font-weight: 700;
     }}
 
     h2, h3 {{
         text-align: center;
-        color: white;
+        color: white !important;
     }}
+
 
     /* TEXTOS */
     p {{
@@ -78,7 +82,8 @@ st.markdown(
         color: white;
     }}
 
-    /* IMAGEN PRINCIPAL CENTRADA */
+
+    /* IMAGEN CENTRADA */
     [data-testid="stImage"] {{
         display: flex;
         justify-content: center;
@@ -90,88 +95,151 @@ st.markdown(
         border-radius: 12px;
     }}
 
-    /* SIDEBAR */
+
+    /* =====================================================
+       SIDEBAR
+       ===================================================== */
+
     [data-testid="stSidebar"] {{
         background-color: rgba(255,255,255,0.92);
         text-align: left;
     }}
 
     [data-testid="stSidebar"] h3 {{
-        color: #222222;
+        color: #222222 !important;
         text-align: left;
     }}
 
     [data-testid="stSidebar"] p {{
-        color: #333333;
+        color: #333333 !important;
         text-align: left;
     }}
 
 
-  /* =====================================================
+    /* =====================================================
        SELECTORES
        ===================================================== */
 
-    /* ETIQUETAS ENCIMA DEL SELECTOR */
-    .stSelectbox label,
-    .stSelectbox label p {
+    /* TEXTO DE LAS ETIQUETAS */
+    .stSelectbox label {{
         color: white !important;
-    }
+    }}
 
-    /* CUADRO DEL SELECTOR */
-    .stSelectbox div[data-baseweb="select"] > div {
+    .stSelectbox label p {{
+        color: white !important;
+    }}
+
+
+    /* CUADRO BLANCO PRINCIPAL */
+    div[data-baseweb="select"] {{
         background-color: white !important;
-        color: black !important;
         border-radius: 10px !important;
-    }
+    }}
 
-    /* TEXTO QUE SELECCIONASTE */
-    .stSelectbox div[data-baseweb="select"] input {
+    /* CONTENEDOR INTERNO DEL CUADRO */
+    div[data-baseweb="select"] > div {{
+        background-color: white !important;
+        border-radius: 10px !important;
         color: black !important;
-    }
+    }}
 
-    .stSelectbox div[data-baseweb="select"] span {
+    /* TEXTO SELECCIONADO */
+    div[data-baseweb="select"] [data-baseweb="value-container"] {{
         color: black !important;
-    }
+        background-color: white !important;
+    }}
 
-    .stSelectbox div[data-baseweb="select"] div {
+    div[data-baseweb="select"] [data-baseweb="value-container"] * {{
         color: black !important;
-    }
+    }}
+
+    /* TEXTO ESPECÍFICO */
+    div[data-baseweb="select"] span {{
+        color: black !important;
+    }}
 
     /* FLECHA */
-    .stSelectbox div[data-baseweb="select"] svg {
+    div[data-baseweb="select"] svg {{
+        color: black !important;
         fill: black !important;
-        color: black !important;
-    }
+    }}
 
-    /* MENÚ DESPLEGABLE */
-    div[data-baseweb="popover"] {
+
+    /* =====================================================
+       MENÚ DESPLEGABLE
+       ===================================================== */
+
+    /* CONTENEDOR DEL MENÚ */
+    div[data-baseweb="popover"] {{
         background-color: white !important;
-    }
+    }}
 
-    /* CONTENEDOR DE LAS OPCIONES */
-    div[role="listbox"] {
+    div[data-baseweb="popover"] > div {{
+        background-color: white !important;
+    }}
+
+    /* LISTA */
+    ul[role="listbox"] {{
+        background-color: white !important;
+    }}
+
+    div[role="listbox"] {{
         background-color: white !important;
         color: black !important;
-    }
+    }}
 
-    /* CADA OPCIÓN */
-    div[role="option"] {
+
+    /* OPCIONES */
+    div[role="option"] {{
         background-color: white !important;
         color: black !important;
-    }
+    }}
 
-    /* TEXTO DE CADA OPCIÓN */
-    div[role="option"] span,
-    div[role="option"] div,
-    div[role="option"] p {
+    div[role="option"] * {{
         color: black !important;
-    }
+        background-color: transparent !important;
+    }}
 
-    /* AL PASAR EL MOUSE */
-    div[role="option"]:hover {
+    /* TEXTO DE LAS OPCIONES */
+    div[role="option"] span {{
+        color: black !important;
+    }}
+
+    div[role="option"] p {{
+        color: black !important;
+    }}
+
+    div[role="option"] div {{
+        color: black !important;
+    }}
+
+
+    /* OPCIÓN AL PASAR EL MOUSE */
+    div[role="option"]:hover {{
         background-color: #eeeeee !important;
         color: black !important;
-    }
+    }}
+
+    div[role="option"]:hover * {{
+        color: black !important;
+    }}
+
+
+    /* OPCIÓN SELECCIONADA */
+    div[role="option"][aria-selected="true"] {{
+        background-color: #eeeeee !important;
+        color: black !important;
+    }}
+
+    div[role="option"][aria-selected="true"] * {{
+        color: black !important;
+    }}
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
 # ---------------------------------------------------------
 # TÍTULO
@@ -203,7 +271,7 @@ with st.sidebar:
 
 
 # ---------------------------------------------------------
-# BOTÓN DE VOZ
+# BOTÓN DE ESCUCHAR
 # ---------------------------------------------------------
 
 st.write("Toca el Botón y habla lo que quires traducir")
@@ -237,7 +305,6 @@ stt_button.js_on_event(
                 if (e.results[i].isFinal) {
                     value += e.results[i][0].transcript;
                 }
-
             }
 
             if (value != "") {
@@ -248,7 +315,6 @@ stt_button.js_on_event(
                         {detail: value}
                     )
                 );
-
             }
         }
 
@@ -458,7 +524,6 @@ if result:
 
         try:
             my_file_name = text[0:20]
-
         except:
             my_file_name = "audio"
 
