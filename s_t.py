@@ -1,8 +1,6 @@
 import os
 import streamlit as st
 from bokeh.models.widgets import Button
-#from bokeh.io import show
-#from bokeh.models import Button
 from bokeh.models import CustomJS
 from streamlit_bokeh_events import streamlit_bokeh_events
 from PIL import Image
@@ -13,57 +11,138 @@ from gtts import gTTS
 from googletrans import Translator
 
 
-# FONDO Y ESTILO
-st.markdown("""
-<style>
-.stApp {
-    background: linear-gradient(rgba(0,0,0,.48), rgba(0,0,0,.48)),
-                url("IDIOMAS.JPG") center/cover fixed;
-}
+# -------------------------------
+# ESTILO VISUAL
+# -------------------------------
 
-.block-container {
-    max-width: 850px;
-    padding-top: 2rem;
-}
+st.set_page_config(
+    page_title="Traductor",
+    layout="centered"
+)
 
-h1, h2, h3, p, label {
-    color: white !important;
-}
+# Imagen de fondo
+with open("IDIOMAS.JPG", "rb") as f:
+    background = f.read()
 
-.stButton > button {
-    border-radius: 10px;
-    font-weight: 600;
-}
-</style>
-""", unsafe_allow_html=True)
+import base64
+
+background_base64 = base64.b64encode(background).decode()
+
+st.markdown(
+    f"""
+    <style>
+
+    .stApp {{
+        background-image:
+            linear-gradient(rgba(255,255,255,0.82), rgba(255,255,255,0.82)),
+            url("data:image/jpg;base64,{background_base64}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }}
+
+    .main {{
+        padding-top: 2rem;
+    }}
+
+    h1 {{
+        text-align: center;
+        font-size: 42px;
+        color: #222222;
+        font-weight: 700;
+    }}
+
+    h2, h3 {{
+        color: #222222;
+    }}
+
+    p {{
+        color: #333333;
+    }}
+
+    .stButton > button {{
+        width: 300px;
+        height: 50px;
+        border-radius: 12px;
+        border: none;
+        font-size: 18px;
+        font-weight: 600;
+        background-color: #ffffff;
+        color: #222222;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+    }}
+
+    .stButton > button:hover {{
+        background-color: #f1f1f1;
+        border: none;
+    }}
+
+    .stSelectbox > div > div {{
+        background-color: rgba(255,255,255,0.95);
+        border-radius: 10px;
+    }}
+
+    .stTextInput > div > div > input {{
+        color: black;
+        background-color: white;
+    }}
+
+    [data-testid="stSidebar"] {{
+        background-color: rgba(255,255,255,0.92);
+    }}
+
+    [data-testid="stSidebar"] h3 {{
+        color: #222222;
+    }}
+
+    [data-testid="stSidebar"] p {{
+        color: #333333;
+    }}
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
-st.title("TRADUCTOR.")
+# -------------------------------
+# CONTENIDO
+# -------------------------------
+
+st.title("🌎 TRADUCTOR")
 st.subheader("Escucho lo que quieres traducir.")
 
 
 image = Image.open('Imagen Traduccion y reconocimiento idiomas.jpg')
 
-st.image(image,width=300)
+st.image(image, width=300)
 
 
 with st.sidebar:
     st.subheader("Traductor.")
-    st.write("Presiona el botón, cuando escuches la señal "
-                 "habla lo que quieres traducir, luego selecciona"   
-                 " la configuración de lenguaje que necesites.")
+    st.write(
+        "Presiona el botón, cuando escuches la señal "
+        "habla lo que quieres traducir, luego selecciona "
+        "la configuración de lenguaje que necesites."
+    )
 
 
-st.write("Toca el Botón y habla lo que quires traducir")
+st.write("Toca el Botón y habla lo que quieres traducir")
 
-stt_button = Button(label=" Escuchar  🎤", width=300, height=50)
+
+stt_button = Button(
+    label=" Escuchar  🎤",
+    width=300,
+    height=50
+)
+
 
 stt_button.js_on_event("button_click", CustomJS(code="""
     var recognition = new webkitSpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = 'es-ES';
- 
+
     recognition.onresult = function (e) {
         var value = "";
         for (var i = e.resultIndex; i < e.results.length; ++i) {
@@ -71,17 +150,18 @@ stt_button.js_on_event("button_click", CustomJS(code="""
                 value += e.results[i][0].transcript;
             }
         }
+
         if (value != "") {
             document.dispatchEvent(
                 new CustomEvent("GET_TEXT", {detail: value})
             );
         }
     }
-    
+
     recognition.onend = function() {
         console.log("Reconocimiento detenido");
     }
-    
+
     recognition.start();
 """))
 
@@ -97,6 +177,7 @@ result = streamlit_bokeh_events(
 
 
 if result:
+
     if "GET_TEXT" in result:
         st.write(result.get("GET_TEXT"))
 
@@ -106,14 +187,26 @@ if result:
         pass
 
     st.title("Texto a Audio")
+
     translator = Translator()
-    
+
     text = str(result.get("GET_TEXT"))
+
 
     in_lang = st.selectbox(
         "Selecciona el lenguaje de Entrada",
-        ("Inglés", "Español", "Italiano", "Frances", "Aleman", "Checo", "Mandarín", "Japonés"),
+        (
+            "Inglés",
+            "Español",
+            "Italiano",
+            "Frances",
+            "Aleman",
+            "Checo",
+            "Mandarín",
+            "Japonés"
+        ),
     )
+
 
     if in_lang == "Inglés":
         input_language = "en"
@@ -133,11 +226,22 @@ if result:
         input_language = "zh-cn"
     elif in_lang == "Japonés":
         input_language = "ja"
-    
+
+
     out_lang = st.selectbox(
         "Selecciona el lenguaje de salida",
-        ("Inglés", "Español", "Italiano", "Frances", "Aleman", "Checo", "Mandarín", "Japonés"),
+        (
+            "Inglés",
+            "Español",
+            "Italiano",
+            "Frances",
+            "Aleman",
+            "Checo",
+            "Mandarín",
+            "Japonés"
+        ),
     )
+
 
     if out_lang == "Inglés":
         output_language = "en"
@@ -157,7 +261,8 @@ if result:
         output_language = "zh-cn"
     elif out_lang == "Japonés":
         output_language = "ja"
-    
+
+
     english_accent = st.selectbox(
         "Selecciona el acento",
         (
@@ -171,7 +276,8 @@ if result:
             "Sudáfrica",
         ),
     )
-    
+
+
     if english_accent == "Defecto":
         tld = "com"
     elif english_accent == "Español":
@@ -188,9 +294,10 @@ if result:
         tld = "ie"
     elif english_accent == "Sudáfrica":
         tld = "co.za"
-    
-    
+
+
     def text_to_speech(input_language, output_language, text, tld):
+
         translation = translator.translate(
             text,
             src=input_language,
@@ -214,10 +321,11 @@ if result:
         tts.save(f"temp/{my_file_name}.mp3")
 
         return my_file_name, trans_text
-    
-    
+
+
     display_output_text = st.checkbox("Mostrar el texto")
-    
+
+
     if st.button("convertir"):
 
         result, output_text = text_to_speech(
@@ -234,18 +342,21 @@ if result:
 
         audio_bytes = audio_file.read()
 
-        st.markdown(f"## Tú audio:")
+        st.markdown("## 🔊 Tu audio:")
+
         st.audio(
             audio_bytes,
             format="audio/mp3",
             start_time=0
         )
-    
+
         if display_output_text:
-            st.markdown(f"## Texto de salida:")
+
+            st.markdown("## 📝 Texto de salida:")
+
             st.write(f" {output_text}")
-    
-    
+
+
     def remove_files(n):
 
         mp3_files = glob.glob("temp/*mp3")
@@ -253,6 +364,7 @@ if result:
         if len(mp3_files) != 0:
 
             now = time.time()
+
             n_days = n * 86400
 
             for f in mp3_files:
@@ -260,6 +372,7 @@ if result:
                 if os.stat(f).st_mtime < now - n_days:
 
                     os.remove(f)
+
                     print("Deleted ", f)
 
 
