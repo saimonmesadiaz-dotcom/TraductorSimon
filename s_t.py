@@ -17,7 +17,7 @@ from googletrans import Translator
 # ---------------------------------------------------------
 
 st.set_page_config(
-    page_title="Traductor",
+    page_title="Traductor - Simón Mesa Díaz",
     layout="centered"
 )
 
@@ -40,7 +40,10 @@ st.markdown(
     f"""
     <style>
 
-    /* FONDO */
+    /* =========================
+       FONDO
+       ========================= */
+
     .stApp {{
         background-image:
             linear-gradient(
@@ -55,13 +58,19 @@ st.markdown(
     }}
 
 
-    /* CONTENIDO PRINCIPAL */
+    /* =========================
+       CONTENIDO
+       ========================= */
+
     .main .block-container {{
         text-align: center;
     }}
 
 
-    /* TÍTULOS */
+    /* =========================
+       TÍTULOS
+       ========================= */
+
     h1 {{
         text-align: center;
         font-size: 42px;
@@ -75,14 +84,20 @@ st.markdown(
     }}
 
 
-    /* TEXTOS */
+    /* =========================
+       TEXTOS
+       ========================= */
+
     p {{
         text-align: center;
         color: white;
     }}
 
 
-    /* IMAGEN CENTRADA */
+    /* =========================
+       IMAGEN
+       ========================= */
+
     [data-testid="stImage"] {{
         display: flex;
         justify-content: center;
@@ -95,9 +110,9 @@ st.markdown(
     }}
 
 
-    /* =====================================================
+    /* =========================
        SIDEBAR
-       ===================================================== */
+       ========================= */
 
     [data-testid="stSidebar"] {{
         background-color: rgba(255,255,255,0.92);
@@ -119,48 +134,60 @@ st.markdown(
        SELECTORES
        ===================================================== */
 
-    /* TEXTO DE LAS ETIQUETAS */
-    .stSelectbox label {{
+    /* ETIQUETAS SOBRE LOS SELECTORES */
+    [data-testid="stSelectbox"] label {{
         color: white !important;
     }}
 
-    .stSelectbox label p {{
+    [data-testid="stSelectbox"] label p {{
         color: white !important;
     }}
 
 
-    /* CUADRO BLANCO PRINCIPAL */
-    div[data-baseweb="select"] {{
-        background-color: white !important;
-        border-radius: 10px !important;
-    }}
-
-    /* CONTENEDOR INTERNO DEL CUADRO */
-    div[data-baseweb="select"] > div {{
+    /* CUADRO PRINCIPAL DEL SELECTOR */
+    [data-testid="stSelectbox"] [data-baseweb="select"] {{
+        background: white !important;
         background-color: white !important;
         border-radius: 10px !important;
         color: black !important;
     }}
+
+
+    /* TODOS LOS ELEMENTOS INTERNOS DEL CUADRO */
+    [data-testid="stSelectbox"] [data-baseweb="select"] > div {{
+        background: white !important;
+        background-color: white !important;
+        color: black !important;
+    }}
+
+
+    /* CONTENEDOR DEL TEXTO */
+    [data-testid="stSelectbox"] [data-baseweb="value-container"] {{
+        background: white !important;
+        background-color: white !important;
+        color: black !important;
+    }}
+
 
     /* TEXTO SELECCIONADO */
-    div[data-baseweb="select"] [data-baseweb="value-container"] {{
+    [data-testid="stSelectbox"] [data-baseweb="value-container"] span {{
         color: black !important;
-        background-color: white !important;
+        background: transparent !important;
     }}
 
-    div[data-baseweb="select"] [data-baseweb="value-container"] * {{
+
+    /* TODOS LOS TEXTOS DENTRO DEL SELECTOR */
+    [data-testid="stSelectbox"] [data-baseweb="select"] span,
+    [data-testid="stSelectbox"] [data-baseweb="select"] p,
+    [data-testid="stSelectbox"] [data-baseweb="select"] div {{
         color: black !important;
     }}
 
-    /* TEXTO ESPECÍFICO */
-    div[data-baseweb="select"] span {{
-        color: black !important;
-    }}
 
     /* FLECHA */
-    div[data-baseweb="select"] svg {{
-        color: black !important;
+    [data-testid="stSelectbox"] [data-baseweb="select"] svg {{
         fill: black !important;
+        color: black !important;
     }}
 
 
@@ -169,70 +196,73 @@ st.markdown(
        ===================================================== */
 
     /* CONTENEDOR DEL MENÚ */
-    div[data-baseweb="popover"] {{
+    [data-baseweb="popover"] {{
+        background: white !important;
         background-color: white !important;
     }}
 
-    div[data-baseweb="popover"] > div {{
+    [data-baseweb="popover"] > div {{
+        background: white !important;
         background-color: white !important;
     }}
+
 
     /* LISTA */
-    ul[role="listbox"] {{
-        background-color: white !important;
-    }}
-
-    div[role="listbox"] {{
+    [role="listbox"] {{
+        background: white !important;
         background-color: white !important;
         color: black !important;
     }}
 
 
-    /* OPCIONES */
-    div[role="option"] {{
+    /* CADA OPCIÓN */
+    [role="option"] {{
+        background: white !important;
         background-color: white !important;
         color: black !important;
     }}
 
-    div[role="option"] * {{
-        color: black !important;
-        background-color: transparent !important;
-    }}
 
     /* TEXTO DE LAS OPCIONES */
-    div[role="option"] span {{
+    [role="option"] span {{
         color: black !important;
     }}
 
-    div[role="option"] p {{
+    [role="option"] div {{
+        color: black !important;
+        background: transparent !important;
+    }}
+
+    [role="option"] p {{
         color: black !important;
     }}
 
-    div[role="option"] div {{
-        color: black !important;
-    }}
 
-
-    /* OPCIÓN AL PASAR EL MOUSE */
-    div[role="option"]:hover {{
+    /* HOVER */
+    [role="option"]:hover {{
+        background: #eeeeee !important;
         background-color: #eeeeee !important;
         color: black !important;
     }}
 
-    div[role="option"]:hover * {{
+    [role="option"]:hover span,
+    [role="option"]:hover div,
+    [role="option"]:hover p {{
         color: black !important;
     }}
 
 
     /* OPCIÓN SELECCIONADA */
-    div[role="option"][aria-selected="true"] {{
+    [role="option"][aria-selected="true"] {{
+        background: #eeeeee !important;
         background-color: #eeeeee !important;
         color: black !important;
     }}
 
-    div[role="option"][aria-selected="true"] * {{
+    [role="option"][aria-selected="true"] span {{
         color: black !important;
     }}
+
 
     </style>
     """,
@@ -270,7 +300,7 @@ with st.sidebar:
 
 
 # ---------------------------------------------------------
-# BOTÓN DE ESCUCHAR
+# RECONOCIMIENTO DE VOZ
 # ---------------------------------------------------------
 
 st.write("Toca el Botón y habla lo que quires traducir")
@@ -280,7 +310,6 @@ stt_button = Button(
     width=300,
     height=50
 )
-
 
 stt_button.js_on_event(
     "button_click",
@@ -307,7 +336,6 @@ stt_button.js_on_event(
             }
 
             if (value != "") {
-
                 document.dispatchEvent(
                     new CustomEvent(
                         "GET_TEXT",
@@ -523,6 +551,7 @@ if result:
 
         try:
             my_file_name = text[0:20]
+
         except:
             my_file_name = "audio"
 
@@ -569,7 +598,6 @@ if result:
             format="audio/mp3",
             start_time=0
         )
-
 
         if display_output_text:
 
